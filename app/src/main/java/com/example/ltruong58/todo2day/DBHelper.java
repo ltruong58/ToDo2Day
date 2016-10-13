@@ -29,7 +29,7 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate (SQLiteDatabase database){
         String table = "CREATE TABLE " + DATABASE_TABLE + "("
-                + KEY_FIELD_ID + " INTEGER PRIMARY KEY, "
+                + KEY_FIELD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + FIELD_DESCRIPTION + " TEXT, "
                 + FIELD_IS_DONE + " INTEGER" + ")";
         database.execSQL (table);
@@ -51,7 +51,7 @@ class DBHelper extends SQLiteOpenHelper {
 
         // Step 2: make a key-value pair for each value you want to insert
         ContentValues values = new ContentValues();
-        values.put(KEY_FIELD_ID, newTask.getId());
+        //values.put(KEY_FIELD_ID, newTask.getId());
         values.put(FIELD_DESCRIPTION, newTask.getDescription());
         values.put(FIELD_IS_DONE, newTask.getIsDone());
 
@@ -88,4 +88,29 @@ class DBHelper extends SQLiteOpenHelper {
         return newTask;
     }
 
+    public void updateTask(Task existingTask)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Step 2: make a key-value pair for each value you want to insert
+        ContentValues values = new ContentValues();
+        //values.put(KEY_FIELD_ID, newTask.getId());
+        values.put(KEY_FIELD_ID, existingTask.getId());
+        values.put(FIELD_DESCRIPTION, existingTask.getDescription());
+        values.put(FIELD_IS_DONE, existingTask.getIsDone());
+
+        // Step 3: Insert value into db
+        db.update(DATABASE_TABLE, values, KEY_FIELD_ID + "=?", new String[] {String.valueOf(existingTask.getId())});
+
+        db.close();
+    }
+
+    public  void deleteAllTasks()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DATABASE_TABLE, null, null);
+        db.close();
+
+
+    }
 }
